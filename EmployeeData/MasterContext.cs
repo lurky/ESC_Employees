@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using EmployeeData.Models;
-
 namespace EmployeeData;
 
 public partial class MasterContext : DbContext
 {
+  //In a production application, this connection string should be stored in a secure location.
+  private readonly string _connectionString = "";
   public MasterContext()
   {
   }
@@ -13,12 +14,11 @@ public partial class MasterContext : DbContext
   public MasterContext(DbContextOptions<MasterContext> options)
       : base(options)
   {
-
   }
 
   protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
   {
-    optionsBuilder.UseSqlServer("Data Source=MINIBOI\\SQLEXPRESS01;Initial Catalog=master;Integrated Security=True;Connect Timeout=30;Encrypt=True;Trust Server Certificate=True;Application Intent=ReadWrite;Multi Subnet Failover=False");
+    optionsBuilder.UseSqlServer(_connectionString);
   }
   public virtual DbSet<Country> Countries { get; set; }
   public virtual DbSet<Department> Departments { get; set; }

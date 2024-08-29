@@ -1,0 +1,10 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/EmployeeAPI_ESC
+/EmployeeAPI/bin/Debug/net8.0
+/EmployeeAPI/obj
+/EmployeeAPI/EmployeeApi.csproj.user
+/EmployeeData/bin/Debug/net8.0
+/EmployeeData/obj

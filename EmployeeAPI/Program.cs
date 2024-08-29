@@ -1,7 +1,7 @@
-
 using EmployeeApi;
-using EmployeeAPI;
+using EmployeeData;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using System.Text.Json.Serialization;
 using Unity;
 
@@ -14,8 +14,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<MasterContext>(options => 
-  options.UseSqlServer(builder.Configuration.GetConnectionString("EmployeeDbContext"))
-);
+  options.UseSqlServer(builder.Configuration.GetConnectionString("EmployeeDbContext")));
 
 builder.Services.Configure<ConnectionStrings>(builder.Configuration.GetSection("ConnectionStrings"));
 builder.Services.AddControllers()
