@@ -5,7 +5,7 @@ namespace EmployeeData;
 public partial class MasterContext : DbContext
 {
   //In a production application, this connection string should be stored in a secure location.
-  private readonly string _connectionString = "Data Source=MINIBOI\\SQLEXPRESS01;Initial Catalog=master;Integrated Security=True;Connect Timeout=30;Encrypt=True;Trust Server Certificate=True;Application Intent=ReadWrite;Multi Subnet Failover=False";
+  private readonly string _connectionString = "";
   public MasterContext()
   {
   }
