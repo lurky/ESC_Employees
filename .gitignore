@@ -8,3 +8,5 @@
 /EmployeeAPI/EmployeeApi.csproj.user
 /EmployeeData/bin/Debug/net8.0
 /EmployeeData/obj
+/EmployeeUI_Blazor/bin/Debug/net8.0
+/EmployeeUI_Blazor/obj

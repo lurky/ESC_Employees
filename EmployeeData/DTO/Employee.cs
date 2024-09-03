@@ -14,5 +14,6 @@
     public virtual Department? Department { get; set; }
     public virtual ICollection<Dependent> Dependents { get; set; } = new List<Dependent>();
     public virtual Job? Job { get; set; }
+    public string? FullName { get { return $"{FirstName} {LastName}"; } }
   }
 }

@@ -1,0 +1,146 @@
+﻿@page "/"
+@using EmployeeData.Contracts
+@using DTO = EmployeeData.DTO
+@using EmployeeData.Repos
+@using System.Net.Http.Json
+@inject HttpClient httpClient
+@attribute [StreamRendering]
+
+<PageTitle>Employees</PageTitle>
+
+@if (employees == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <MudDataGrid Items="@employees"
+                 ReadOnly="true"
+                 EditMode="@DataGridEditMode.Cell"
+                 SortMode="SortMode.Multiple"
+                 Filterable="true"
+                 QuickFilter="@_quickFilter">
+        <ToolBarContent>
+        <MudText Typo="Typo.h6">Employees</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+            AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+        <Columns>
+            <HierarchyColumn T="DTO.Employee" InitiallyExpandedFunc="@(x => x.EmployeeId == 100)" />
+            <PropertyColumn Property="x => x.FirstName" Title="First Name" />
+            <PropertyColumn Property="x => x.LastName" Title="Last Name" />
+            <PropertyColumn Property="x => x.Email" />
+            <PropertyColumn Property="x => x.PhoneNumber" Title="Phone Number" />
+            <PropertyColumn Property="x => x.HireDate" Title="Hire Date" />
+        </Columns>
+        <ChildRowContent>
+            <MudCard>
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h6">Employee ID#@context.Item.EmployeeId</MudText>
+                    </CardHeaderContent>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudTabs>
+                        <MudTabPanel Text="@nameof(DTO.Department)">
+                            <MudList>
+                                    <MudListItem>
+                                        <ChildContent>
+                                            Name: @context.Item.Department?.DepartmentName
+                                        </ChildContent>
+                                    </MudListItem>
+                            </MudList>
+                        </MudTabPanel>
+                        <MudTabPanel Text="@nameof(DTO.Job)">
+                            <MudList>
+                                <MudListItem>
+                                    <ChildContent>
+                                        Title: @context.Item.Job?.JobTitle
+                                    </ChildContent>
+                                </MudListItem>
+                                <MudListItem>
+                                    <ChildContent>
+                                        Salary Range: @context.Item.Job?.MinSalary - @context.Item.Job?.MaxSalary
+                                    </ChildContent>
+                                </MudListItem>
+                            </MudList>
+                        </MudTabPanel>
+                        <MudTabPanel Text="@nameof(DTO.Location)">
+                            <MudList>
+                                <MudListItem>
+                                    <ChildContent>
+                                        Street Address: @context.Item.Department?.Location?.StreetAddress
+                                    </ChildContent>
+                                </MudListItem>
+                                <MudListItem>
+                                    <ChildContent>
+                                        State: @context.Item.Department?.Location?.StateProvince
+                                    </ChildContent>
+                                </MudListItem>
+                                <MudListItem>
+                                    <ChildContent>
+                                        City: @context.Item.Department?.Location?.City
+                                    </ChildContent>
+                                </MudListItem>
+                                <MudListItem>
+                                    <ChildContent>
+                                        Postal Code: @context.Item.Department?.Location?.PostalCode
+                                    </ChildContent>
+                                </MudListItem>
+                            </MudList>
+                        </MudTabPanel>
+                        <MudTabPanel Text="@nameof(DTO.Country)">
+                            <MudList>
+                                <MudListItem>
+                                    <ChildContent>
+                                        Name: @context.Item.Department?.Location?.Country?.CountryName
+                                    </ChildContent>
+                                </MudListItem>
+                                <MudListItem>
+                                    <ChildContent>
+                                        Region: @context.Item.Department?.Location?.Country?.Region?.RegionName
+                                    </ChildContent>
+                                </MudListItem>
+                            </MudList>
+
+                        </MudTabPanel>
+                    </MudTabs>
+                </MudCardContent>
+            </MudCard>
+        </ChildRowContent>
+        <PagerContent>
+            <MudDataGridPager T="DTO.Employee" />
+        </PagerContent>
+    </MudDataGrid>
+}
+
+@code {
+    private List<DTO.Employee> employees { get; set; } = default!;
+    private string _searchString;
+    [Inject]
+    private IEmployeeRepo employeeRepo { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        employees = await employeeRepo.GetEmployees();
+    }
+
+    // quick filter - filter globally across multiple columns with the same input
+    private Func<DTO.Employee, bool> _quickFilter => x =>
+    {
+        if (string.IsNullOrWhiteSpace(_searchString))
+            return true;
+
+        if (x.EmployeeId.ToString().Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (x.FullName.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if ($"{x.Department?.DepartmentName} {x.Department?.Location?.Country?.CountryName} {x.Job?.JobTitle}".Contains(_searchString))
+            return true;
+
+        return false;
+    };
+}
